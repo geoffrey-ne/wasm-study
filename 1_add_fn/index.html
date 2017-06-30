@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>add_fn.wasm</title>
+</head>
+
+<body>
+    <div>
+        <input type="text" value="1023" id="num1"> +
+        <input type="text" value="3123123" id="num2"> =
+        <span id="res">0</span>
+    </div>
+</body>
+<script>
+    var num1Input = document.getElementById('num1'),
+        num2Input = document.getElementById('num2');
+
+    fetchWasm('./add.wasm').then(module => {
+        var res = module.add(parseInt(num1Input.value), parseInt(num2Input.value));
+        document.getElementById('res').innerText = res;
+        console.log(res);
+    });
+
+    function fetchWasm(src) {
+        return fetch(src)
+            .then(res => {
+                if (res.ok)
+                    return res.arrayBuffer();
+                throw new Error(`Unable to fetch WASM.`);
+            })
+            .then(bytes => {
+                return WebAssembly.compile(bytes);
+            })
+            .then(module => {
+                return WebAssembly.instantiate(module);
+            })
+            .then(instance => {
+                return instance.exports;
+            });
+    }
+
+</script>
+
+</html>
