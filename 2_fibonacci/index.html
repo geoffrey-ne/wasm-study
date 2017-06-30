@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>fibonacci_fn.wasm</title>
+</head>
+
+<body>
+    <div>
+
+    </div>
+</body>
+<script>
+    var num = 4;
+    console.time("js");
+    console.time("fibonacci(" + num + ") : " + fibonacci(num));
+    console.timeEnd("js");
+
+    console.time("wasm");
+    console.time("fetch");
+    fetchWasm('./fibonacci.wasm').then(module => {
+        console.timeEnd("fetch");
+        console.time("fibonacci(" + num + ") : " + module.fibonacci(num));
+        console.timeEnd("wasm");
+    });
+
+    function fibonacci(n) {
+        if (n === 0) {
+            return 0;
+        }
+        if (n === 1) {
+            return 1;
+        }
+        return fibonacci(n - 1) + fibonacci(n - 2);
+    }
+
+    function fetchWasm(src) {
+        return fetch(src)
+            .then(res => {
+                if (res.ok)
+                    return res.arrayBuffer();
+                throw new Error(`Unable to fetch WASM.`);
+            })
+            .then(bytes => {
+                return WebAssembly.compile(bytes);
+            })
+            .then(module => {
+                return WebAssembly.instantiate(module);
+            })
+            .then(instance => {
+                return instance.exports;
+            });
+    }
+
+</script>
+
+</html>
