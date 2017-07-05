@@ -1,25 +1,15 @@
 <!DOCTYPE html>
-<html>
-
-<head>
-    <title>fibonacci_fn.wasm</title>
-</head>
-
-<body>
-    <div>
-
-    </div>
-</body>
+<title>fibonacci_fn.wasm</title>
 <script>
-    var num = 4;
+    var num = 10;
     console.time("js");
     console.time("fibonacci(" + num + ") : " + fibonacci(num));
     console.timeEnd("js");
 
-    console.time("wasm");
     console.time("fetch");
     fetchWasm('./fibonacci.wasm').then(module => {
         console.timeEnd("fetch");
+        console.time("wasm");
         console.time("fibonacci(" + num + ") : " + module.fibonacci(num));
         console.timeEnd("wasm");
     });
@@ -53,5 +43,3 @@
     }
 
 </script>
-
-</html>

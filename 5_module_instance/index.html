@@ -1,0 +1,25 @@
+<!doctype html>
+<title>WASM Test</title>
+<script>
+  var wasmCode = new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0, 1, 135, 128, 128, 128, 0, 1, 96, 2, 125, 125, 1, 125, 3, 130, 128, 128, 128, 0, 1, 0, 4, 132, 128, 128, 128, 0, 1, 112, 0, 0, 5, 131, 128, 128, 128, 0, 1, 0, 1, 6, 129, 128, 128, 128, 0, 0, 7, 144, 128, 128, 128, 0, 2, 6, 109, 101, 109, 111, 114, 121, 2, 0, 3, 97, 100, 100, 0, 0, 10, 141, 128, 128, 128, 0, 1, 135, 128, 128, 128, 0, 0, 32, 0, 32, 1, 146, 11]);
+
+  WebAssembly.compile(wasmCode)
+    .then(module => WebAssembly.instantiate(module))
+    .then(instance => {
+      console.log(instance.exports.add(1, 4));
+    })
+
+  // fetch
+  function fetchAndInstantiateWasm(url, imports) {
+    return fetch(url)
+      .then(res => {
+        if (res.ok)
+          return res.arrayBuffer();
+        throw new Error(`Unable to fetch Web Assembly file ${url}.`);
+      })
+      .then(bytes => WebAssembly.compile(bytes))
+      .then(module => WebAssembly.instantiate(module, imports || {}))
+      .then(instance => instance.exports);
+  }
+
+</script>

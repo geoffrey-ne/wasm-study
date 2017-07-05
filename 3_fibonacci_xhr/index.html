@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<title>fibonacci_xhr.wasm</title>
+<script>
+    
+    let request = new XMLHttpRequest();
+    request.open('GET', './fibonacci.wasm');
+    request.responseType = 'arraybuffer';
+    request.send();
+    request.onload = function () {
+        let bytes = request.response;
+        WebAssembly.instantiate(bytes, {}).then(results => {
+            console.log(results.instance.exports.fibonacci(10));
+        });
+    };
+
+</script>
